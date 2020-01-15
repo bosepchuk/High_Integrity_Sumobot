@@ -1,7 +1,7 @@
 # High Integrity Sumobot
 This mini-sumobot is an advanced-level project programmed in Ada/SPARK and Arduino (C++).
 
-[![High Integrity Sumobot - Fighting Demo](/images/youtube_sumobot_fighting_demo_cover.png)](https://youtu.be/GyEZLSxFQtE "High Inegrity Sumobot - Fighting Demo")
+[![High Integrity Sumobot - Fighting Demo](/images/youtube_sumobot_fighting_demo_cover.png)](https://youtu.be/GyEZLSxFQtE "High Integrity Sumobot - Fighting Demo")
 
 
 # Story
