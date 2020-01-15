@@ -1,0 +1,832 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<System name="Sumobot">
+  <Parameters>
+    <Parameter id="0" name="Button_B_Is_Pressed" type="2">
+      <values>
+        <value>true</value>
+        <value>false</value>
+      </values>
+      <basechoices>
+        <basechoice>false</basechoice>
+      </basechoices>
+      <invalidValues />
+    </Parameter>
+    <Parameter id="1" name="Clock_Ms" type="0">
+      <values>
+        <value>199</value>
+        <value>200</value>
+        <value>219</value>
+        <value>220</value>
+        <value>1300</value>
+        <value>1301</value>
+        <value>1999</value>
+        <value>2000</value>
+        <value>5999</value>
+        <value>6000</value>
+      </values>
+      <basechoices />
+      <invalidValues />
+    </Parameter>
+    <Parameter id="3" name="Battery_Status" type="1">
+      <values>
+        <value>Ok</value>
+        <value>Low</value>
+        <value>Critical</value>
+      </values>
+      <basechoices>
+        <basechoice>Ok</basechoice>
+      </basechoices>
+      <invalidValues />
+    </Parameter>
+    <Parameter id="4" name="Target_Dir" type="1">
+      <values>
+        <value>Unknown</value>
+        <value>Left</value>
+        <value>Slightly_Left</value>
+        <value>Front_Close</value>
+        <value>Front_Far</value>
+        <value>Slightly_Right</value>
+        <value>Right</value>
+      </values>
+      <basechoices />
+      <invalidValues />
+    </Parameter>
+    <Parameter id="5" name="Line_Dir" type="1">
+      <values>
+        <value>Left</value>
+        <value>Center</value>
+        <value>Right</value>
+        <value>None</value>
+      </values>
+      <basechoices>
+        <basechoice>None</basechoice>
+      </basechoices>
+      <invalidValues />
+    </Parameter>
+    <Parameter id="6" name="Scan_Dir" type="1">
+      <values>
+        <value>Left</value>
+        <value>Straight</value>
+        <value>Right</value>
+      </values>
+      <basechoices>
+        <basechoice>Straight</basechoice>
+      </basechoices>
+      <invalidValues />
+    </Parameter>
+    <Parameter id="7" name="Current_State" type="1">
+      <values>
+        <value>Battery_Critical</value>
+        <value>Pausing</value>
+        <value>Waiting</value>
+        <value>Scanning</value>
+        <value>Driving</value>
+        <value>Reversing</value>
+      </values>
+      <basechoices>
+        <basechoice>Driving</basechoice>
+      </basechoices>
+      <invalidValues />
+    </Parameter>
+  </Parameters>
+  <OutputParameters />
+  <Relations />
+  <Constraints>
+    <Constraint text="(Battery_Status = &quot;Low&quot;) =&gt; (Current_State = &quot;Pausing&quot;)">
+      <Parameters>
+        <Parameter name="Battery_Status" />
+        <Parameter name="Current_State" />
+      </Parameters>
+    </Constraint>
+    <Constraint text="(Current_State = &quot;Battery_Critical&quot;) =&gt; (Button_B_Is_Pressed = false &amp;&amp; Clock_Ms = 6000 &amp;&amp; (Battery_Status = &quot;Low&quot; || Battery_Status = &quot;Critical&quot;) &amp;&amp; Target_Dir = &quot;Unknown&quot; &amp;&amp; Line_Dir = &quot;None&quot; &amp;&amp; Scan_Dir = &quot;Straight&quot;)">
+      <Parameters>
+        <Parameter name="Current_State" />
+        <Parameter name="Button_B_Is_Pressed" />
+        <Parameter name="Clock_Ms" />
+        <Parameter name="Battery_Status" />
+        <Parameter name="Target_Dir" />
+        <Parameter name="Line_Dir" />
+        <Parameter name="Scan_Dir" />
+      </Parameters>
+    </Constraint>
+    <Constraint text="(Current_State = &quot;Pausing&quot;) =&gt; (Clock_Ms = 6000 &amp;&amp; Target_Dir = &quot;Unknown&quot; &amp;&amp; Line_Dir = &quot;None&quot; &amp;&amp; Scan_Dir = &quot;Straight&quot;)">
+      <Parameters>
+        <Parameter name="Current_State" />
+        <Parameter name="Clock_Ms" />
+        <Parameter name="Target_Dir" />
+        <Parameter name="Line_Dir" />
+        <Parameter name="Scan_Dir" />
+      </Parameters>
+    </Constraint>
+    <Constraint text="(Current_State = &quot;Waiting&quot;) =&gt; ((Clock_Ms = 1999 || Clock_Ms = 2000) &amp;&amp; Target_Dir = &quot;Unknown&quot; &amp;&amp; Line_Dir = &quot;None&quot; &amp;&amp; Scan_Dir = &quot;Straight&quot;)&#xD;&#xA;">
+      <Parameters>
+        <Parameter name="Current_State" />
+        <Parameter name="Clock_Ms" />
+        <Parameter name="Target_Dir" />
+        <Parameter name="Line_Dir" />
+        <Parameter name="Scan_Dir" />
+      </Parameters>
+    </Constraint>
+    <Constraint text="(Current_State = &quot;Driving&quot;) =&gt; ((Clock_Ms = 5999 || Clock_Ms = 6000) &amp;&amp; Scan_Dir = &quot;Straight&quot;)">
+      <Parameters>
+        <Parameter name="Current_State" />
+        <Parameter name="Clock_Ms" />
+        <Parameter name="Scan_Dir" />
+      </Parameters>
+    </Constraint>
+    <Constraint text="(Current_State = &quot;Reversing&quot;) =&gt; ((Clock_Ms = 219 || Clock_Ms = 220) &amp;&amp; Target_Dir = &quot;Unknown&quot; &amp;&amp; Line_Dir = &quot;None&quot; &amp;&amp; Scan_Dir = &quot;Straight&quot;)">
+      <Parameters>
+        <Parameter name="Current_State" />
+        <Parameter name="Clock_Ms" />
+        <Parameter name="Target_Dir" />
+        <Parameter name="Line_Dir" />
+        <Parameter name="Scan_Dir" />
+      </Parameters>
+    </Constraint>
+    <Constraint text="(Current_State = &quot;Scanning&quot;) =&gt; ((Clock_Ms = 199 || Clock_Ms = 200 || Clock_Ms = 1300 || Clock_Ms = 1301) &amp;&amp; Line_Dir = &quot;None&quot;)">
+      <Parameters>
+        <Parameter name="Current_State" />
+        <Parameter name="Clock_Ms" />
+        <Parameter name="Line_Dir" />
+      </Parameters>
+    </Constraint>
+    <Constraint text="(Current_State = &quot;Scanning&quot; &amp;&amp; (Clock_Ms = 200 || Clock_Ms = 1300)) =&gt; (Target_Dir = &quot;Unknown&quot; || Target_Dir = &quot;Left&quot; || Target_Dir = &quot;Front_Close&quot; || Target_Dir = &quot;Right&quot;)">
+      <Parameters>
+        <Parameter name="Current_State" />
+        <Parameter name="Clock_Ms" />
+        <Parameter name="Target_Dir" />
+      </Parameters>
+    </Constraint>
+    <Constraint text="(Button_B_Is_Pressed = true) =&gt; (Battery_Status = &quot;Ok&quot; &amp;&amp; (Clock_Ms = 200 || Clock_Ms = 220 || Clock_Ms = 1301 || Clock_Ms = 2000 || Clock_Ms = 6000) &amp;&amp; Target_Dir = &quot;Unknown&quot; &amp;&amp; Scan_Dir = &quot;Straight&quot; &amp;&amp; Line_Dir = &quot;None&quot;)&#xD;&#xA;">
+      <Parameters>
+        <Parameter name="Button_B_Is_Pressed" />
+        <Parameter name="Battery_Status" />
+        <Parameter name="Clock_Ms" />
+        <Parameter name="Clock_Ms" />
+        <Parameter name="Clock_Ms" />
+        <Parameter name="Clock_Ms" />
+        <Parameter name="Clock_Ms" />
+        <Parameter name="Target_Dir" />
+        <Parameter name="Scan_Dir" />
+        <Parameter name="Line_Dir" />
+      </Parameters>
+    </Constraint>
+    <Constraint text="(Battery_Status = &quot;Critical&quot;) =&gt; (Button_B_Is_Pressed = false &amp;&amp; (Clock_Ms = 200 || Clock_Ms = 220 || Clock_Ms = 1301 || Clock_Ms = 2000 || Clock_Ms = 6000) &amp;&amp; Target_Dir = &quot;Unknown&quot; &amp;&amp; Line_Dir = &quot;None&quot; &amp;&amp; Scan_Dir = &quot;Straight&quot;)">
+      <Parameters>
+        <Parameter name="Battery_Status" />
+        <Parameter name="Button_B_Is_Pressed" />
+        <Parameter name="Clock_Ms" />
+        <Parameter name="Clock_Ms" />
+        <Parameter name="Clock_Ms" />
+        <Parameter name="Clock_Ms" />
+        <Parameter name="Clock_Ms" />
+        <Parameter name="Target_Dir" />
+        <Parameter name="Line_Dir" />
+        <Parameter name="Scan_Dir" />
+      </Parameters>
+    </Constraint>
+    <Constraint text="(Current_State = &quot;Driving&quot; &amp;&amp; Line_Dir != &quot;None&quot;) =&gt; (Clock_Ms = 5999 &amp;&amp; Target_Dir = &quot;Unknown&quot;)&#xD;&#xA;">
+      <Parameters>
+        <Parameter name="Current_State" />
+        <Parameter name="Line_Dir" />
+        <Parameter name="Clock_Ms" />
+        <Parameter name="Target_Dir" />
+      </Parameters>
+    </Constraint>
+    <Constraint text="(Current_State = &quot;Driving&quot;) =&gt; (Target_Dir != &quot;Front_Far&quot;)&#xD;&#xA;">
+      <Parameters>
+        <Parameter name="Current_State" />
+        <Parameter name="Target_Dir" />
+      </Parameters>
+    </Constraint>
+    <Constraint text="(Current_State = &quot;Scanning&quot; &amp;&amp; Target_Dir = &quot;Front_Close&quot;) =&gt; Scan_Dir = &quot;Straight&quot;)&#xD;&#xA;">
+      <Parameters>
+        <Parameter name="Current_State" />
+        <Parameter name="Target_Dir" />
+        <Parameter name="Scan_Dir" />
+      </Parameters>
+    </Constraint>
+    <Constraint text="(Current_State = &quot;Scanning&quot; &amp;&amp; (Clock_Ms = 199 || Clock_Ms = 1301)) =&gt; (Battery_Status != &quot;Low&quot; &amp;&amp; (Target_Dir = &quot;Left&quot; || Target_Dir = &quot;Unknown&quot;))&#xD;&#xA;">
+      <Parameters>
+        <Parameter name="Current_State" />
+        <Parameter name="Clock_Ms" />
+        <Parameter name="Clock_Ms" />
+        <Parameter name="Battery_Status" />
+        <Parameter name="Target_Dir" />
+        <Parameter name="Target_Dir" />
+      </Parameters>
+    </Constraint>
+    <Constraint text="(Current_State = &quot;Scanning&quot; &amp;&amp; (Clock_Ms = 199 || Clock_Ms = 1301)) =&gt; (Battery_Status != &quot;Low&quot; &amp;&amp; (Target_Dir = &quot;Left&quot; || Target_Dir = &quot;Unknown&quot;) &amp;&amp; Scan_Dir = &quot;Straight&quot;)&#xD;&#xA;">
+      <Parameters>
+        <Parameter name="Current_State" />
+        <Parameter name="Clock_Ms" />
+        <Parameter name="Clock_Ms" />
+        <Parameter name="Battery_Status" />
+        <Parameter name="Target_Dir" />
+        <Parameter name="Target_Dir" />
+        <Parameter name="Scan_Dir" />
+      </Parameters>
+    </Constraint>
+  </Constraints>
+  <Testset doi="6">
+    <Testcase TCNo="0">
+      <Value>1</Value>
+      <Value>false</Value>
+      <Value>199</Value>
+      <Value>Ok</Value>
+      <Value>Unknown</Value>
+      <Value>None</Value>
+      <Value>Straight</Value>
+      <Value>Scanning</Value>
+    </Testcase>
+    <Testcase TCNo="1">
+      <Value>2</Value>
+      <Value>false</Value>
+      <Value>199</Value>
+      <Value>Ok</Value>
+      <Value>Left</Value>
+      <Value>None</Value>
+      <Value>Straight</Value>
+      <Value>Scanning</Value>
+    </Testcase>
+    <Testcase TCNo="2">
+      <Value>3</Value>
+      <Value>false</Value>
+      <Value>200</Value>
+      <Value>Ok</Value>
+      <Value>Unknown</Value>
+      <Value>None</Value>
+      <Value>Left</Value>
+      <Value>Scanning</Value>
+    </Testcase>
+    <Testcase TCNo="3">
+      <Value>4</Value>
+      <Value>true</Value>
+      <Value>200</Value>
+      <Value>Ok</Value>
+      <Value>Unknown</Value>
+      <Value>None</Value>
+      <Value>Straight</Value>
+      <Value>Scanning</Value>
+    </Testcase>
+    <Testcase TCNo="4">
+      <Value>5</Value>
+      <Value>false</Value>
+      <Value>200</Value>
+      <Value>Ok</Value>
+      <Value>Unknown</Value>
+      <Value>None</Value>
+      <Value>Right</Value>
+      <Value>Scanning</Value>
+    </Testcase>
+    <Testcase TCNo="5">
+      <Value>6</Value>
+      <Value>false</Value>
+      <Value>200</Value>
+      <Value>Critical</Value>
+      <Value>Unknown</Value>
+      <Value>None</Value>
+      <Value>Straight</Value>
+      <Value>Scanning</Value>
+    </Testcase>
+    <Testcase TCNo="6">
+      <Value>7</Value>
+      <Value>false</Value>
+      <Value>200</Value>
+      <Value>Ok</Value>
+      <Value>Left</Value>
+      <Value>None</Value>
+      <Value>Left</Value>
+      <Value>Scanning</Value>
+    </Testcase>
+    <Testcase TCNo="7">
+      <Value>8</Value>
+      <Value>false</Value>
+      <Value>200</Value>
+      <Value>Ok</Value>
+      <Value>Left</Value>
+      <Value>None</Value>
+      <Value>Straight</Value>
+      <Value>Scanning</Value>
+    </Testcase>
+    <Testcase TCNo="8">
+      <Value>9</Value>
+      <Value>false</Value>
+      <Value>200</Value>
+      <Value>Ok</Value>
+      <Value>Left</Value>
+      <Value>None</Value>
+      <Value>Right</Value>
+      <Value>Scanning</Value>
+    </Testcase>
+    <Testcase TCNo="9">
+      <Value>10</Value>
+      <Value>false</Value>
+      <Value>200</Value>
+      <Value>Ok</Value>
+      <Value>Front_Close</Value>
+      <Value>None</Value>
+      <Value>Straight</Value>
+      <Value>Scanning</Value>
+    </Testcase>
+    <Testcase TCNo="10">
+      <Value>11</Value>
+      <Value>false</Value>
+      <Value>200</Value>
+      <Value>Ok</Value>
+      <Value>Right</Value>
+      <Value>None</Value>
+      <Value>Left</Value>
+      <Value>Scanning</Value>
+    </Testcase>
+    <Testcase TCNo="11">
+      <Value>12</Value>
+      <Value>false</Value>
+      <Value>200</Value>
+      <Value>Ok</Value>
+      <Value>Right</Value>
+      <Value>None</Value>
+      <Value>Straight</Value>
+      <Value>Scanning</Value>
+    </Testcase>
+    <Testcase TCNo="12">
+      <Value>13</Value>
+      <Value>false</Value>
+      <Value>200</Value>
+      <Value>Ok</Value>
+      <Value>Right</Value>
+      <Value>None</Value>
+      <Value>Right</Value>
+      <Value>Scanning</Value>
+    </Testcase>
+    <Testcase TCNo="13">
+      <Value>14</Value>
+      <Value>false</Value>
+      <Value>219</Value>
+      <Value>Ok</Value>
+      <Value>Unknown</Value>
+      <Value>None</Value>
+      <Value>Straight</Value>
+      <Value>Reversing</Value>
+    </Testcase>
+    <Testcase TCNo="14">
+      <Value>15</Value>
+      <Value>true</Value>
+      <Value>220</Value>
+      <Value>Ok</Value>
+      <Value>Unknown</Value>
+      <Value>None</Value>
+      <Value>Straight</Value>
+      <Value>Reversing</Value>
+    </Testcase>
+    <Testcase TCNo="15">
+      <Value>16</Value>
+      <Value>false</Value>
+      <Value>220</Value>
+      <Value>Critical</Value>
+      <Value>Unknown</Value>
+      <Value>None</Value>
+      <Value>Straight</Value>
+      <Value>Reversing</Value>
+    </Testcase>
+    <Testcase TCNo="16">
+      <Value>17</Value>
+      <Value>false</Value>
+      <Value>1300</Value>
+      <Value>Ok</Value>
+      <Value>Unknown</Value>
+      <Value>None</Value>
+      <Value>Left</Value>
+      <Value>Scanning</Value>
+    </Testcase>
+    <Testcase TCNo="17">
+      <Value>18</Value>
+      <Value>false</Value>
+      <Value>1300</Value>
+      <Value>Ok</Value>
+      <Value>Unknown</Value>
+      <Value>None</Value>
+      <Value>Straight</Value>
+      <Value>Scanning</Value>
+    </Testcase>
+    <Testcase TCNo="18">
+      <Value>19</Value>
+      <Value>false</Value>
+      <Value>1300</Value>
+      <Value>Ok</Value>
+      <Value>Unknown</Value>
+      <Value>None</Value>
+      <Value>Right</Value>
+      <Value>Scanning</Value>
+    </Testcase>
+    <Testcase TCNo="19">
+      <Value>20</Value>
+      <Value>false</Value>
+      <Value>1300</Value>
+      <Value>Ok</Value>
+      <Value>Left</Value>
+      <Value>None</Value>
+      <Value>Left</Value>
+      <Value>Scanning</Value>
+    </Testcase>
+    <Testcase TCNo="20">
+      <Value>21</Value>
+      <Value>false</Value>
+      <Value>1300</Value>
+      <Value>Ok</Value>
+      <Value>Left</Value>
+      <Value>None</Value>
+      <Value>Straight</Value>
+      <Value>Scanning</Value>
+    </Testcase>
+    <Testcase TCNo="21">
+      <Value>22</Value>
+      <Value>false</Value>
+      <Value>1300</Value>
+      <Value>Ok</Value>
+      <Value>Left</Value>
+      <Value>None</Value>
+      <Value>Right</Value>
+      <Value>Scanning</Value>
+    </Testcase>
+    <Testcase TCNo="22">
+      <Value>23</Value>
+      <Value>false</Value>
+      <Value>1300</Value>
+      <Value>Ok</Value>
+      <Value>Front_Close</Value>
+      <Value>None</Value>
+      <Value>Straight</Value>
+      <Value>Scanning</Value>
+    </Testcase>
+    <Testcase TCNo="23">
+      <Value>24</Value>
+      <Value>false</Value>
+      <Value>1300</Value>
+      <Value>Ok</Value>
+      <Value>Right</Value>
+      <Value>None</Value>
+      <Value>Left</Value>
+      <Value>Scanning</Value>
+    </Testcase>
+    <Testcase TCNo="24">
+      <Value>25</Value>
+      <Value>false</Value>
+      <Value>1300</Value>
+      <Value>Ok</Value>
+      <Value>Right</Value>
+      <Value>None</Value>
+      <Value>Straight</Value>
+      <Value>Scanning</Value>
+    </Testcase>
+    <Testcase TCNo="25">
+      <Value>26</Value>
+      <Value>false</Value>
+      <Value>1300</Value>
+      <Value>Ok</Value>
+      <Value>Right</Value>
+      <Value>None</Value>
+      <Value>Right</Value>
+      <Value>Scanning</Value>
+    </Testcase>
+    <Testcase TCNo="26">
+      <Value>27</Value>
+      <Value>true</Value>
+      <Value>1301</Value>
+      <Value>Ok</Value>
+      <Value>Unknown</Value>
+      <Value>None</Value>
+      <Value>Straight</Value>
+      <Value>Scanning</Value>
+    </Testcase>
+    <Testcase TCNo="27">
+      <Value>28</Value>
+      <Value>false</Value>
+      <Value>1301</Value>
+      <Value>Critical</Value>
+      <Value>Unknown</Value>
+      <Value>None</Value>
+      <Value>Straight</Value>
+      <Value>Scanning</Value>
+    </Testcase>
+    <Testcase TCNo="28">
+      <Value>29</Value>
+      <Value>false</Value>
+      <Value>1301</Value>
+      <Value>Ok</Value>
+      <Value>Left</Value>
+      <Value>None</Value>
+      <Value>Straight</Value>
+      <Value>Scanning</Value>
+    </Testcase>
+    <Testcase TCNo="29">
+      <Value>30</Value>
+      <Value>false</Value>
+      <Value>1999</Value>
+      <Value>Ok</Value>
+      <Value>Unknown</Value>
+      <Value>None</Value>
+      <Value>Straight</Value>
+      <Value>Waiting</Value>
+    </Testcase>
+    <Testcase TCNo="30">
+      <Value>31</Value>
+      <Value>true</Value>
+      <Value>2000</Value>
+      <Value>Ok</Value>
+      <Value>Unknown</Value>
+      <Value>None</Value>
+      <Value>Straight</Value>
+      <Value>Waiting</Value>
+    </Testcase>
+    <Testcase TCNo="31">
+      <Value>32</Value>
+      <Value>false</Value>
+      <Value>2000</Value>
+      <Value>Critical</Value>
+      <Value>Unknown</Value>
+      <Value>None</Value>
+      <Value>Straight</Value>
+      <Value>Waiting</Value>
+    </Testcase>
+    <Testcase TCNo="32">
+      <Value>33</Value>
+      <Value>false</Value>
+      <Value>5999</Value>
+      <Value>Ok</Value>
+      <Value>Unknown</Value>
+      <Value>Left</Value>
+      <Value>Straight</Value>
+      <Value>Driving</Value>
+    </Testcase>
+    <Testcase TCNo="33">
+      <Value>34</Value>
+      <Value>false</Value>
+      <Value>5999</Value>
+      <Value>Ok</Value>
+      <Value>Unknown</Value>
+      <Value>Center</Value>
+      <Value>Straight</Value>
+      <Value>Driving</Value>
+    </Testcase>
+    <Testcase TCNo="34">
+      <Value>35</Value>
+      <Value>false</Value>
+      <Value>5999</Value>
+      <Value>Ok</Value>
+      <Value>Unknown</Value>
+      <Value>Right</Value>
+      <Value>Straight</Value>
+      <Value>Driving</Value>
+    </Testcase>
+    <Testcase TCNo="35">
+      <Value>36</Value>
+      <Value>false</Value>
+      <Value>5999</Value>
+      <Value>Ok</Value>
+      <Value>Unknown</Value>
+      <Value>None</Value>
+      <Value>Straight</Value>
+      <Value>Driving</Value>
+    </Testcase>
+    <Testcase TCNo="36">
+      <Value>37</Value>
+      <Value>false</Value>
+      <Value>5999</Value>
+      <Value>Ok</Value>
+      <Value>Left</Value>
+      <Value>None</Value>
+      <Value>Straight</Value>
+      <Value>Driving</Value>
+    </Testcase>
+    <Testcase TCNo="37">
+      <Value>38</Value>
+      <Value>false</Value>
+      <Value>5999</Value>
+      <Value>Ok</Value>
+      <Value>Slightly_Left</Value>
+      <Value>None</Value>
+      <Value>Straight</Value>
+      <Value>Driving</Value>
+    </Testcase>
+    <Testcase TCNo="38">
+      <Value>39</Value>
+      <Value>false</Value>
+      <Value>5999</Value>
+      <Value>Ok</Value>
+      <Value>Front_Close</Value>
+      <Value>None</Value>
+      <Value>Straight</Value>
+      <Value>Driving</Value>
+    </Testcase>
+    <Testcase TCNo="39">
+      <Value>40</Value>
+      <Value>false</Value>
+      <Value>5999</Value>
+      <Value>Ok</Value>
+      <Value>Slightly_Right</Value>
+      <Value>None</Value>
+      <Value>Straight</Value>
+      <Value>Driving</Value>
+    </Testcase>
+    <Testcase TCNo="40">
+      <Value>41</Value>
+      <Value>false</Value>
+      <Value>5999</Value>
+      <Value>Ok</Value>
+      <Value>Right</Value>
+      <Value>None</Value>
+      <Value>Straight</Value>
+      <Value>Driving</Value>
+    </Testcase>
+    <Testcase TCNo="41">
+      <Value>42</Value>
+      <Value>false</Value>
+      <Value>6000</Value>
+      <Value>Critical</Value>
+      <Value>Unknown</Value>
+      <Value>None</Value>
+      <Value>Straight</Value>
+      <Value>Battery_Critical</Value>
+    </Testcase>
+    <Testcase TCNo="42">
+      <Value>43</Value>
+      <Value>true</Value>
+      <Value>6000</Value>
+      <Value>Ok</Value>
+      <Value>Unknown</Value>
+      <Value>None</Value>
+      <Value>Straight</Value>
+      <Value>Pausing</Value>
+    </Testcase>
+    <Testcase TCNo="43">
+      <Value>44</Value>
+      <Value>false</Value>
+      <Value>6000</Value>
+      <Value>Low</Value>
+      <Value>Unknown</Value>
+      <Value>None</Value>
+      <Value>Straight</Value>
+      <Value>Pausing</Value>
+    </Testcase>
+    <Testcase TCNo="44">
+      <Value>45</Value>
+      <Value>false</Value>
+      <Value>6000</Value>
+      <Value>Critical</Value>
+      <Value>Unknown</Value>
+      <Value>None</Value>
+      <Value>Straight</Value>
+      <Value>Pausing</Value>
+    </Testcase>
+    <Testcase TCNo="45">
+      <Value>46</Value>
+      <Value>true</Value>
+      <Value>6000</Value>
+      <Value>Ok</Value>
+      <Value>Unknown</Value>
+      <Value>None</Value>
+      <Value>Straight</Value>
+      <Value>Driving</Value>
+    </Testcase>
+    <Testcase TCNo="46">
+      <Value>47</Value>
+      <Value>false</Value>
+      <Value>6000</Value>
+      <Value>Critical</Value>
+      <Value>Unknown</Value>
+      <Value>None</Value>
+      <Value>Straight</Value>
+      <Value>Driving</Value>
+    </Testcase>
+    <Testcase TCNo="47">
+      <Value>48</Value>
+      <Value>false</Value>
+      <Value>6000</Value>
+      <Value>Ok</Value>
+      <Value>Left</Value>
+      <Value>None</Value>
+      <Value>Straight</Value>
+      <Value>Driving</Value>
+    </Testcase>
+    <Testcase TCNo="48">
+      <Value>49</Value>
+      <Value>false</Value>
+      <Value>6000</Value>
+      <Value>Ok</Value>
+      <Value>Slightly_Left</Value>
+      <Value>None</Value>
+      <Value>Straight</Value>
+      <Value>Driving</Value>
+    </Testcase>
+    <Testcase TCNo="49">
+      <Value>50</Value>
+      <Value>false</Value>
+      <Value>6000</Value>
+      <Value>Ok</Value>
+      <Value>Front_Close</Value>
+      <Value>None</Value>
+      <Value>Straight</Value>
+      <Value>Driving</Value>
+    </Testcase>
+    <Testcase TCNo="50">
+      <Value>51</Value>
+      <Value>false</Value>
+      <Value>6000</Value>
+      <Value>Ok</Value>
+      <Value>Slightly_Right</Value>
+      <Value>None</Value>
+      <Value>Straight</Value>
+      <Value>Driving</Value>
+    </Testcase>
+    <Testcase TCNo="51">
+      <Value>52</Value>
+      <Value>false</Value>
+      <Value>6000</Value>
+      <Value>Ok</Value>
+      <Value>Right</Value>
+      <Value>None</Value>
+      <Value>Straight</Value>
+      <Value>Driving</Value>
+    </Testcase>
+    <Testcase TCNo="52">
+      <Value>53</Value>
+      <Value>false</Value>
+      <Value>6000</Value>
+      <Value>Ok</Value>
+      <Value>Unknown</Value>
+      <Value>None</Value>
+      <Value>Straight</Value>
+      <Value>Pausing</Value>
+    </Testcase>
+    <Testcase TCNo="53">
+      <Value>54</Value>
+      <Value>false</Value>
+      <Value>2000</Value>
+      <Value>Ok</Value>
+      <Value>Unknown</Value>
+      <Value>None</Value>
+      <Value>Straight</Value>
+      <Value>Waiting</Value>
+    </Testcase>
+    <Testcase TCNo="54">
+      <Value>55</Value>
+      <Value>false</Value>
+      <Value>220</Value>
+      <Value>Ok</Value>
+      <Value>Unknown</Value>
+      <Value>None</Value>
+      <Value>Straight</Value>
+      <Value>Reversing</Value>
+    </Testcase>
+    <Testcase TCNo="55">
+      <Value>56</Value>
+      <Value>false</Value>
+      <Value>200</Value>
+      <Value>Ok</Value>
+      <Value>Unknown</Value>
+      <Value>None</Value>
+      <Value>Straight</Value>
+      <Value>Scanning</Value>
+    </Testcase>
+    <Testcase TCNo="56">
+      <Value>57</Value>
+      <Value>false</Value>
+      <Value>1301</Value>
+      <Value>Ok</Value>
+      <Value>Unknown</Value>
+      <Value>None</Value>
+      <Value>Straight</Value>
+      <Value>Scanning</Value>
+    </Testcase>
+    <Testcase TCNo="57">
+      <Value>58</Value>
+      <Value>false</Value>
+      <Value>6000</Value>
+      <Value>Ok</Value>
+      <Value>Unknown</Value>
+      <Value>None</Value>
+      <Value>Straight</Value>
+      <Value>Driving</Value>
+    </Testcase>
+  </Testset>
+  <Header>
+    <Value />
+    <Value>Button_B_Is_Pressed</Value>
+    <Value>Clock_Ms</Value>
+    <Value>Battery_Status</Value>
+    <Value>Target_Dir</Value>
+    <Value>Line_Dir</Value>
+    <Value>Scan_Dir</Value>
+    <Value>Current_State</Value>
+  </Header>
+  <Stat-Data>
+    <ExecutionTime>0.146</ExecutionTime>
+    <MaxDomainSize>10</MaxDomainSize>
+    <MinDomainSize>2</MinDomainSize>
+    <TotalNoOfCombination>324</TotalNoOfCombination>
+    <TotalNoOfTests>58</TotalNoOfTests>
+    <Algorithm>IPOG</Algorithm>
+  </Stat-Data>
+</System>
+

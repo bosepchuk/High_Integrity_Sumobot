@@ -1,0 +1,100 @@
+[System]
+-- specify system name
+Name: Sumobot
+
+[Parameter]
+-- general syntax is parameter_name : value1, value2, ...
+Button_B_Is_Pressed (boolean) : true, [false]
+Clock_Ms (int) : 199, 200, 219, 220, 1300, 1301, 1999, 2000, 5999, 6000
+Battery_Status (enum) : [Ok], Low, Critical
+Target_Dir (enum) : Unknown, Left, Slightly_Left, Front_Close, Front_Far, Slightly_Right, Right
+Line_Dir (enum) : Left, Center, Right, [None]
+Scan_Dir (enum) : Left, [Straight], Right
+Current_State (enum) : Battery_Critical, Pausing, Waiting, Scanning, [Driving], Reversing
+
+[Relation]
+-- this section is optional
+-- general format Rx : (p1, p2, ..., pk, Strength)
+
+[Constraint]
+-- this section is also optional
+(Battery_Status = "Low") => (Current_State = "Pausing")
+(Current_State = "Battery_Critical") => (Button_B_Is_Pressed = false && Clock_Ms = 6000 && (Battery_Status = "Low" || Battery_Status = "Critical") && Target_Dir = "Unknown" && Line_Dir = "None" && Scan_Dir = "Straight")
+(Current_State = "Pausing") => (Clock_Ms = 6000 && Target_Dir = "Unknown" && Line_Dir = "None" && Scan_Dir = "Straight")
+(Current_State = "Waiting") => ((Clock_Ms = 1999 || Clock_Ms = 2000) && Target_Dir = "Unknown" && Line_Dir = "None" && Scan_Dir = "Straight")
+
+(Current_State = "Driving") => ((Clock_Ms = 5999 || Clock_Ms = 6000) && Scan_Dir = "Straight")
+(Current_State = "Reversing") => ((Clock_Ms = 219 || Clock_Ms = 220) && Target_Dir = "Unknown" && Line_Dir = "None" && Scan_Dir = "Straight")
+(Current_State = "Scanning") => ((Clock_Ms = 199 || Clock_Ms = 200 || Clock_Ms = 1300 || Clock_Ms = 1301) && Line_Dir = "None")
+(Current_State = "Scanning" && (Clock_Ms = 200 || Clock_Ms = 1300)) => (Target_Dir = "Unknown" || Target_Dir = "Left" || Target_Dir = "Front_Close" || Target_Dir = "Right")
+(Button_B_Is_Pressed = true) => (Battery_Status = "Ok" && (Clock_Ms = 200 || Clock_Ms = 220 || Clock_Ms = 1301 || Clock_Ms = 2000 || Clock_Ms = 6000) && Target_Dir = "Unknown" && Scan_Dir = "Straight" && Line_Dir = "None")
+
+(Battery_Status = "Critical") => (Button_B_Is_Pressed = false && (Clock_Ms = 200 || Clock_Ms = 220 || Clock_Ms = 1301 || Clock_Ms = 2000 || Clock_Ms = 6000) && Target_Dir = "Unknown" && Line_Dir = "None" && Scan_Dir = "Straight")
+(Current_State = "Driving" && Line_Dir != "None") => (Clock_Ms = 5999 && Target_Dir = "Unknown")
+
+(Current_State = "Driving") => (Target_Dir != "Front_Far")
+
+(Current_State = "Scanning" && Target_Dir = "Front_Close") => Scan_Dir = "Straight")
+
+(Current_State = "Scanning" && (Clock_Ms = 199 || Clock_Ms = 1301)) => (Battery_Status != "Low" && Target_Dir = "Unknown" && Scan_Dir = "Straight")
+
+[Test Set]
+-- set existing test set for extend mode. this is also optional
+-- * represents don't-care value
+Button_B_Is_Pressed,Clock_Ms,Battery_Status,Target_Dir,Line_Dir,Scan_Dir,Current_State
+false,199,Ok,Unknown,None,Straight,Scanning
+false,200,Ok,Unknown,None,Left,Scanning
+true,200,Ok,Unknown,None,Straight,Scanning
+false,200,Ok,Unknown,None,Right,Scanning
+false,200,Critical,Unknown,None,Straight,Scanning
+false,200,Ok,Left,None,Left,Scanning
+false,200,Ok,Left,None,Straight,Scanning
+false,200,Ok,Left,None,Right,Scanning
+false,200,Ok,Front_Close,None,Straight,Scanning
+false,200,Ok,Right,None,Left,Scanning
+false,200,Ok,Right,None,Straight,Scanning
+false,200,Ok,Right,None,Right,Scanning
+false,219,Ok,Unknown,None,Straight,Reversing
+true,220,Ok,Unknown,None,Straight,Reversing
+false,220,Critical,Unknown,None,Straight,Reversing
+false,1300,Ok,Unknown,None,Left,Scanning
+false,1300,Ok,Unknown,None,Straight,Scanning
+false,1300,Ok,Unknown,None,Right,Scanning
+false,1300,Ok,Left,None,Left,Scanning
+false,1300,Ok,Left,None,Straight,Scanning
+false,1300,Ok,Left,None,Right,Scanning
+false,1300,Ok,Front_Close,None,Straight,Scanning
+false,1300,Ok,Right,None,Left,Scanning
+false,1300,Ok,Right,None,Straight,Scanning
+false,1300,Ok,Right,None,Right,Scanning
+true,1301,Ok,Unknown,None,Straight,Scanning
+false,1301,Critical,Unknown,None,Straight,Scanning
+false,1999,Ok,Unknown,None,Straight,Waiting
+true,2000,Ok,Unknown,None,Straight,Waiting
+false,2000,Critical,Unknown,None,Straight,Waiting
+false,5999,Ok,Unknown,Left,Straight,Driving
+false,5999,Ok,Unknown,Center,Straight,Driving
+false,5999,Ok,Unknown,Right,Straight,Driving
+false,5999,Ok,Unknown,None,Straight,Driving
+false,5999,Ok,Left,None,Straight,Driving
+false,5999,Ok,Slightly_Left,None,Straight,Driving
+false,5999,Ok,Front_Close,None,Straight,Driving
+false,5999,Ok,Slightly_Right,None,Straight,Driving
+false,5999,Ok,Right,None,Straight,Driving
+false,6000,Critical,Unknown,None,Straight,Battery_Critical
+true,6000,Ok,Unknown,None,Straight,Pausing
+false,6000,Low,Unknown,None,Straight,Pausing
+false,6000,Critical,Unknown,None,Straight,Pausing
+true,6000,Ok,Unknown,None,Straight,Driving
+false,6000,Critical,Unknown,None,Straight,Driving
+false,6000,Ok,Left,None,Straight,Driving
+false,6000,Ok,Slightly_Left,None,Straight,Driving
+false,6000,Ok,Front_Close,None,Straight,Driving
+false,6000,Ok,Slightly_Right,None,Straight,Driving
+false,6000,Ok,Right,None,Straight,Driving
+false,6000,Ok,Unknown,None,Straight,Pausing
+false,2000,Ok,Unknown,None,Straight,Waiting
+false,1301,Ok,Unknown,None,Straight,Scanning
+false,220,Ok,Unknown,None,Straight,Reversing
+false,200,Ok,Unknown,None,Straight,Scanning
+false,6000,Ok,Unknown,None,Straight,Driving
